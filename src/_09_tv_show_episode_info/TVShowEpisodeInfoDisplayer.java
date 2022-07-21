@@ -1,6 +1,9 @@
 package _09_tv_show_episode_info;
 
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -8,14 +11,44 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-public class TVShowEpisodeInfoDisplayer {
-	
+public class TVShowEpisodeInfoDisplayer implements ActionListener {
+	JFrame frame = new JFrame();
+	JPanel panel = new JPanel();
+	JTextField field = new JTextField();
+	JButton Button = new JButton();
+	Dimension BIG = new Dimension(400, 400);	
+	Dimension MID = new Dimension(70, 30);	
 	public TVShowEpisodeInfoDisplayer() {
 		
+		frame.setPreferredSize(BIG);
+		field.setPreferredSize(MID);
+		frame.add(panel);
+		frame.setVisible(true);
+		Button.addActionListener(this);
+		panel.add(field);
+		panel.add(Button);
+		Button.setText("Submit");
+		frame.setTitle("TV Show Info");
+		
+		
 	}
-
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String field1 = field.getText();
+		String field2 = getShowEpisodeData(field1);
+		JOptionPane.showMessageDialog(null, field2);
+		
+			
+		}
+		
+	
+	
 	
 	
 	
@@ -74,4 +107,8 @@ public class TVShowEpisodeInfoDisplayer {
 		
 		return res;
 	}
+
+
+
+
 }
