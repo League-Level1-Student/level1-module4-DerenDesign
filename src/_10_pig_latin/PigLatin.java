@@ -49,7 +49,7 @@ public class PigLatin implements ActionListener {
 		// TODO Auto-generated method stub
 		JButton buttonPressed = (JButton) e.getSource();
 		if(buttonPressed == Button) {
-			
+			//translateEnglishToPigLatin();
 			
 		}
 		if(buttonPressed == Button1) {
