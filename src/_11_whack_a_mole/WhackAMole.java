@@ -1,74 +1,106 @@
 package _11_whack_a_mole;
 
+
+
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Date;
 import  java.util.Random;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 
-public class WhackAMole {
+public class WhackAMole implements ActionListener {
 	JFrame frame = new JFrame();
 	JPanel panel = new JPanel();
-	
+	JButton moles;	
+	int whacked;
+	int missed;
+	Date date = new Date();
 	void run(){
-		frame.setPreferredSize(new Dimension(500,600));
+		frame.setPreferredSize(new Dimension(400,500));
 		frame.add(panel);
 		frame.setVisible(true);
 		frame.setTitle("Whack a Button for Fame and Glory");
-		drawButtons(1);
+		int ran =  new Random().nextInt(24);
+		drawButtons(ran);
+		frame.pack();
 		
 		
 	}
-	void drawButtons(int randomN) {
-		JButton button1 = new JButton();
-		JButton button2 = new JButton();
-		JButton button3 = new JButton();
-		JButton button4 = new JButton();
-		JButton button5 = new JButton();
-		JButton button6 = new JButton();
-		JButton button7 = new JButton();
-		JButton button8 = new JButton();
-		JButton button9 = new JButton();
-		JButton button10 = new JButton();
-		JButton button11 = new JButton();
-		JButton button12 = new JButton();
-		JButton button13 = new JButton();
-		JButton button14 = new JButton();
-		JButton button15 = new JButton();
-		JButton button16 = new JButton();
-		JButton button17 = new JButton();
-		JButton button18 = new JButton();
-		JButton button19 = new JButton();
-		JButton button20 = new JButton();
-		JButton button21 = new JButton();
-		JButton button22 = new JButton();
-		JButton button23 = new JButton();
-		JButton button24 = new JButton();
-		panel.add(button1);
-		panel.add(button2);
-		panel.add(button3);
-		panel.add(button4);
-		panel.add(button5);
-		panel.add(button6);
-		panel.add(button7);
-		panel.add(button8);
-		panel.add(button9);
-		panel.add(button10);
-		panel.add(button11);
-		panel.add(button12);
-		panel.add(button13);
-		panel.add(button14);
-		panel.add(button15);
-		panel.add(button16);
-		panel.add(button17);
-		panel.add(button18);
-		panel.add(button19);
-		panel.add(button20);
-		panel.add(button21);
-		panel.add(button22);
-		panel.add(button23);
-		panel.add(button24);
-		
+	
+	 static void speak(String words) {
+	        if( System.getProperty( "os.name" ).contains( "Windows" ) ) {
+	            String cmd = "PowerShell -Command \"Add-Type -AssemblyName System.Speech; (New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak('"
+	                    + words + "');\"";
+	            try {
+	                Runtime.getRuntime().exec( cmd ).waitFor();
+	            } catch( Exception e ) {
+	                e.printStackTrace();
+	            }
+	        } else {
+	            try {
+	                Runtime.getRuntime().exec( "say " + words ).waitFor();
+	            } catch( Exception e ) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	
+	 private void endGame(Date timeAtStart, int molesWhacked) { 
+		    Date timeAtEnd = new Date();
+		    JOptionPane.showMessageDialog(null, "Your whack rate is "
+		            + ((timeAtEnd.getTime() - timeAtStart.getTime()) / 1000.00 / molesWhacked)
+		                  + " moles per second.");
+		}
+
+	
+	 private void playSound(String fileName) { 
+		   // AudioClip sound = JApplet.newAudioClip(getClass().getResource(fileName));
+		    //sound.play();
+		 try 
+		    {
+		        
+		        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(fileName).getAbsoluteFile());
+		        Clip clip = AudioSystem.getClip();
+		        clip.open(audioInputStream);
+		        clip.start();
+		    } catch (Exception e) {
+		    	e.printStackTrace();
+		    }
+
+		}
+	public void drawButtons(int randomN) {
+		 for (int i = 0; i < 24; i++) {
+				
+				if (i == randomN) {
+					JButton moles = new JButton("mole!");
+					moles.addActionListener(this);
+					panel.add(moles);
+					frame.add(panel);
+					
+				
+				}
+				
+				
+				
+				else {	
+					JButton button = new JButton("    ");
+					button.addActionListener(this);
+					
+					panel.add(button);
+					
+					frame.add(panel);
+					
+					frame.setSize(300, 500);
+				}
 
 		
 			
@@ -77,3 +109,46 @@ public class WhackAMole {
 		
 	}
 }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		JButton buttonPressed = (JButton) e.getSource();
+		if (buttonPressed.getText().equals("    ")) {
+			missed++;
+			int ran2 =  new Random().nextInt(24);
+			speak("You missed!");
+			frame.remove(panel);
+			panel = new JPanel();
+			drawButtons(ran2);
+			frame.add(panel);
+			frame.pack();
+
+			if(missed == 5) {
+				endGame(date, missed);
+				System.exit(0);
+			}
+			
+			
+			
+		}
+		if (buttonPressed.getText().equals("mole!")) {
+			whacked++;
+			int ran3 = new Random().nextInt(24);
+			frame.remove(panel);
+			panel = new JPanel();
+			drawButtons(ran3);
+			frame.add(panel);
+			frame.pack();
+			playSound("src\\_11_whack_a_mole\\643921__suddendice__as054715-short-physical-exortion.wav");
+			if(whacked == 10) {
+				endGame(date, whacked);
+				System.exit(0);
+			}
+			
+			
+			
+			
+		}
+		
+	}
+}
+
